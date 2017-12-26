@@ -9,7 +9,7 @@
       <span v-text="currentItem"></span>
     </p>
     <div class="controlBox">
-      GROUP COUNT : <input type="number" v-model="groupCount">
+      GROUP COUNT : <input type="number" v-model="groupCount" disabled>
       <input type="button" value="CALC" @click="generate">
     </div>
   </div>
@@ -35,10 +35,10 @@ export default {
         let ypos = Math.floor(INDEX / (GROUP * 3));
         let xpos = INDEX - ypos * GROUP * 3;
         if( (xpos+1) % 3 === 0 ){
-          el.style.borderRightColor = '#f44';
+          el.style.borderRightColor = '#ff32ff';
         }
         if( (ypos+1) % 3 === 0 ){
-          el.style.borderBottomColor = '#f44';
+          el.style.borderBottomColor = '#ff32ff';
         }
       }
     }
@@ -74,6 +74,17 @@ export default {
       0, 5, 2, 4, 6, 3, 9, 7, 0,
       6, 4, 0, 1, 0, 0, 0, 0, 3
     ] */
+    this.list = [
+      2,0,0,0,0,0,0,0,7,
+      0,0,7,6,1,0,0,0,0,
+      0,0,9,0,0,7,2,6,0,
+      0,0,4,0,6,0,0,7,0,
+      0,5,0,4,0,9,0,3,0,
+      0,2,0,0,7,0,5,0,0,
+      0,8,6,7,0,0,9,0,0,
+      0,0,0,0,8,4,3,0,0,
+      4,0,0,0,0,0,0,0,8
+    ]
   },
   methods: {
     edit(e, index) {
@@ -90,13 +101,7 @@ export default {
     },
     hoverItem(curr) {
       this.currentItem = curr;
-    },
-    calcBorder(binding) {
-      let index = binding.value;
-      let ypos = Math.floor(index / (this.groupCount * 3));
-      let xpos = index - ypos * this.groupCount * 3;
-      
-    },
+    }
   }
 }
 </script>

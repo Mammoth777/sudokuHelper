@@ -24,7 +24,7 @@ function calcXY(index) {
   }
 }
 // 1.2 坐标转索引对应的数组的的--值--
-function calcValue(xp = 0, yp = 0 , arr = ORIGIN) {
+function calcValue(xp = 0, yp = 0, arr = ORIGIN) {
   let index = xp + yp * GROUP * 3;
   return arr[index];
 }
@@ -118,23 +118,23 @@ function mix(index, arr) {
 // 3.1.1 如果此处已经是非零数字, 则返回当前值
 // 3.1.2 如果此处是单元素数组, 则返回该元素
 // 3.1.3 否则返回计算后可能的值
-function eachPosMaybe( arr ) {
-  if(arr===undefined){
+function eachPosMaybe(arr) {
+  if (arr === undefined) {
     debugger;
   }
   let res = []; // 返回的结果数组
   // 3.1 遍历原始数组, 得到每个位置的 (当前数字 或 当前数组)
   for (let i = 0; i < GROUP * 3 * GROUP * 3; i++) {
     let computedVal = undefined; // 计算结果值, 数字|数组
-    let {xp, yp}= calcXY(i);
+    let { xp, yp } = calcXY(i);
     let val = calcValue(xp, yp, arr);
     if (typeof val === 'number' && val !== 0) {
       // 3.1.1 如果此处已经是非零数字, 则返回当前值
       computedVal = val;
-    }else if( val instanceof Array && val.length === 1 ){
+    } else if (val instanceof Array && val.length === 1) {
       // 3.1.2 如果此处是单元素数组, 则返回该元素
       computedVal = val[0];
-    }else {
+    } else {
       // 3.1.3 否则返回计算后可能的值
       computedVal = mix(i, arr);
     }
@@ -143,11 +143,11 @@ function eachPosMaybe( arr ) {
   return res;
 }
 // 3.2 转换唯一值数组并重新计算, --> 所有只有一个元素的数组, 都是经过计算证明, 此处只有唯一可能的数字.
-function assignNum(arr){
+function assignNum(arr) {
   let count = 0;
-  arr.forEach(function(ele, index) {
+  arr.forEach(function (ele, index) {
     // 如果是数组, 且只有唯一值, 则确定该数字
-    if ( ele instanceof Array && ele.length === 1 ){
+    if (ele instanceof Array && ele.length === 1) {
       arr[index] = ele[0];
       count++;
     }
@@ -163,21 +163,20 @@ function assignNum(arr){
 // 4.2 如果有确定的格子, 则继续下一次计算, 
 // 4.3 如果再没有确定数字的格子, 则返回
 let calcCount = 0;
-// *************************************************
-// 一个神奇的发现, 如果原数组正确, 最多只会计算4次  !!!
-// 如果原数组错误, 则会计算6次 !!!
-// *************************************************
-function recursion(origin){
+
+function recursion(origin) {
   // 4.1 计算每个位置的值, 并赋值唯一值数组
-  var {arr, count} = assignNum(eachPosMaybe(origin));
+  var { arr, count } = assignNum(eachPosMaybe(origin));
   // 4.2 如果此次有确定的格子, 则继续下一次计算, 
-  if( count != 0 ){
+  if (count != 0) {
     console.log(`第${++calcCount}次计算 : 确定了${count}个格子`);
     return recursion(arr); // 如果此处不return, 递归后, 函数返回的会是undefined
-  }else if(calcCount > 4){
+  } 
+  /* else if (calcCount > 4) {
     console.log(`计算量为${calcCount}次, 原数据可能有错`);
     return arr;
-  }else{
+  }  */
+  else {
     // 4.3 如果再没有确定数字的格子, 则返回
     console.log(`最后一次计算的count为${count}, 没有更多可以确定的格子了`);
     return arr;
@@ -185,17 +184,32 @@ function recursion(origin){
 }
 
 // 5. 渲染页面
-function render(resarr){
+function render(resarr) {
   let tds = document.querySelectorAll('td');
-  tds.forEach(function(ele,index) {
+  tds.forEach(function (ele, index) {
     ele.querySelector('span:first-child').innerHTML = ORIGIN[index] || '';//如果是0则不渲染
-    !ORIGIN[index] ? 
-    ele.querySelector('span:last-child').innerHTML = resarr[index] : null;
+    !ORIGIN[index] ?
+      ele.querySelector('span:last-child').innerHTML = resarr[index] : null;
   });
 }
 
 // 6. 如果最终依然不能确定为每个格子一个数组, 则可以 [假定] (每行|每列|每9格)重复率最低的一个
 // 似乎不靠谱, 下次写的方向
+// 6.1 写一个验证工具, 每格为一个数字, 则结束
+function verify(resarr) {
+  // true 则完成 -> 未进行 三个判断标准的判定
+  return resarr.every(ele => {
+    return typeof ele === 'number';
+  })
+}
+// 6.2 从索引为0开始, 依次猜测
+let arrIndex = 0; // 记录猜测到的数组的索引
+let itemIndex = 0; // 记录猜测到的数组内某元素的第几个可能的数字
+function guess(resarr) {
+  if (verify(resarr)) return;
+  // 如果元素是数组
+
+}
 
 // 主程序
 // console.time('calc');
